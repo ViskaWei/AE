@@ -5,18 +5,18 @@
           "nb/**": true,
         },
         "python.languageServer": "Microsoft",
-        "python.pythonPath": "/datascope/slurm/miniconda3/envs/astro-dnn/bin/python",
+        "python.pythonPath": "/datascope/slurm/miniconda3/envs/ae-tf/bin/python3.8",
         "python.envFile": "${workspaceFolder}/.env",
         "python.testing.pytestEnabled": false,
         "python.testing.nosetestsEnabled": false,
         "python.testing.unittestEnabled": true,
         "python.testing.unittestArgs": [
-          "-v",
-          "-s",
-          "./test",
-          "-p",
-          "test_*.py"
-        ],
+        "-v",
+        "-s",
+        "./test",
+        "-p",
+        "test_*.py"
+    ],
         
         "python.jediEnabled": false,
         "[markdown]": {

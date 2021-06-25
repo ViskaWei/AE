@@ -1,3 +1,5 @@
 *Keras-Project-Template
 .ipynb_checkpoints
 junk
+.env
+.vscode

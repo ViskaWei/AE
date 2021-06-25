@@ -16,23 +16,23 @@ from tensorflow.keras.models import load_model, save_model
 import tensorflow.keras.layers as kl
 import tensorflow.keras.regularizers as kr
 import tensorflow.keras.initializers as ki
-import tensorflow.python.keras.optimizer_v2 as ko
+import tensorflow.keras.optimizers as ko
 import tensorflow.keras.activations as ka
 
-import pfsspec.util as util
-from pfsspec.constants import Constants
-from pfsspec.data.dataset import Dataset
-from pfsspec.ml.dnn.dnnmodel import DnnModel
+import ae.util as util
+from ae.constants import Constants
+# from pfsspec.data.dataset import Dataset
+# from pfsspec.ml.dnn.dnnmodel import DnnModel
 #from pfsspec.ml.dnn.keras.radam import RAdam
-from pfsspec.ml.dnn.keras.tensorboard import TensorBoard
-from pfsspec.ml.dnn.keras.constantvector import ConstantVector
-from pfsspec.ml.dnn.keras.basemodelcheckpoint import BaseModelCheckpoint
-from pfsspec.ml.dnn.keras.kerasdatagenerator import KerasDataGenerator
-from pfsspec.ml.dnn.keras.earlystopping import EarlyStopping
-from pfsspec.ml.dnn.keras.keyboardinterrupt import KeyboardInterrupt
-from pfsspec.ml.dnn.keras.periodiccheckpoint import PeriodicCheckpoint
+# from pfsspec.ml.dnn.keras.tensorboard import TensorBoard
+# from pfsspec.ml.dnn.keras.constantvector import ConstantVector
+# from pfsspec.ml.dnn.keras.basemodelcheckpoint import BaseModelCheckpoint
+# from pfsspec.ml.dnn.keras.kerasdatagenerator import KerasDataGenerator
+# from pfsspec.ml.dnn.keras.earlystopping import EarlyStopping
+# from pfsspec.ml.dnn.keras.keyboardinterrupt import KeyboardInterrupt
+# from pfsspec.ml.dnn.keras.periodiccheckpoint import PeriodicCheckpoint
 
-from .losses import *
+# from .losses import *
 
 class KerasModel(DnnModel):
     def __init__(self, orig=None, levels=4, units=32):

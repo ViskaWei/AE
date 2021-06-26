@@ -42,10 +42,10 @@ class AE(object):
 
         self.encoder = self.get_encoder()
         self.decoder = self.get_decoder()
-
-        self.opt = self.get_opt(self, opt, lr)
+        self.lr = lr
+        self.opt = self.get_opt(opt)
         self.loss = loss
-        self.name = self.get_name(name, opt)
+        self.name = self.get_name(name)
         self.log_dir = "logs/fit/" + self.name
 
         self.ae = self.get_ae()
@@ -60,18 +60,20 @@ class AE(object):
         ]
 
 
-    def get_opt(self, opt, lr):
+    def get_opt(self, opt):
         if opt == 'adam':
-            return ko.Adam(learning_rate=lr, decay=1e-6)
+            return ko.Adam(learning_rate=self.lr, decay=1e-6)
         if opt == 'sgd':
-            return ko.SGD(learning_rate=lr, momentum=0.9)
+            return ko.SGD(learning_rate=self.lr, momentum=0.9)
         else:
             raise 'optimizer not working'
 
     def get_name(self, name):
-        out_name = f'{self.loss}_lr{self.lr}_l{self.latent_dim}_h{len(self.hidden_dims)}'
+        lr_name = -np.log10(self.lr)
+
+        out_name = f'{self.loss}_lr{lr_name}_l{self.latent_dim}_h{len(self.hidden_dims)}'
         if self.encoder_dp != 0:
-            out_name = out_name + 'dp{self.encoder_dp}_'
+            out_name = out_name + f'dp{self.encoder_dp}_'
         t = datetime.datetime.now().strftime("%m%d-%H%M%S")
         out_name = out_name + name + '_' + t
         return out_name.replace('.', '')

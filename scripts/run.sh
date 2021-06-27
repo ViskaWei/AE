@@ -75,7 +75,7 @@ done
 
 if [[ $PYTHON_DEBUG == "1" ]]; then
     #DEBUGGER="-m ptvsd --host localhost --port 5678 --wait"
-    DEBUGGER="-m debugpy --listen 0.0.0.0:1178 --wait-for-client"
+    DEBUGGER="-m debugpy --listen 0.0.0.0:2227 --wait-for-client"
     PARAMS="$PARAMS --debug"
 else
     DEBUGGER=""

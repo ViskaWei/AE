@@ -1,0 +1,6 @@
+1. cmd
+    1.1 config file.
+2. data 0, 1, 2, 3
+3. layer structure 0, 1, 2, 3
+4. tensorboard histograms
+5. loop scripts

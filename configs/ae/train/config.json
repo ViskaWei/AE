@@ -1,0 +1,33 @@
+{
+    "data": {
+      "dir": "/scratch/ceph/swei20/data/ae/dataset/test",
+      "filename": "tt.h5",
+      "train": "flux10kmm",
+      "test": "flux10kmm"
+    },
+    "model":{
+      "name": "SimpleAE",
+      "input_dim": 4096,
+      "latent_dim": 32,
+      "hidden_dims": [],
+      "dropout": 0.0,
+      "lr": 0.001,
+      "reg1": 0.0,
+      "loss": "mae",
+      "opt": "adam"
+    },
+    "trainer":{
+      "ep": 20,
+      "batch_size": 64,
+      "validation_split":0.1,
+      "verbose_training": true
+    },
+    "callbacks":{
+        "checkpoint_monitor": "val_loss",
+        "checkpoint_mode": "min",
+        "checkpoint_save_best_only": true,
+        "checkpoint_save_weights_only": true,
+        "checkpoint_verbose": true,
+        "tensorboard_write_graph": true
+    }
+}

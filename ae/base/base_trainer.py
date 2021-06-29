@@ -3,6 +3,10 @@ class BaseTrain(object):
         self.model = model
         self.data = data
         self.config = config
+        self.root = "/home/swei20/AE/"
+
+
+
 
     def train(self):
         raise NotImplementedError

@@ -1,6 +1,6 @@
 class BaseDataLoader(object):
-    def __init__(self, config):
-        self.config = config
+    def __init__(self):
+        pass
 
     def get_train_data(self):
         raise NotImplementedError

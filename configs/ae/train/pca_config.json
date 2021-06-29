@@ -1,0 +1,28 @@
+{
+    "data": {
+      "dir": "/scratch/ceph/swei20/data/ae/dataset/test",
+      "filename": "pca.h5",
+      "train": "flux300"
+    },
+    "model":{
+      "name": "SimpleAE",
+      "input_dim": 300,
+      "latent_dim": 8,
+      "hidden_dims": [64],
+      "dropout": 0.2,
+      "lr": 0.001,
+      "reg1": 0.0,
+      "loss": "mae",
+      "opt": "adam"
+    },
+    "trainer":{
+      "epoch": 100,
+      "batch_size": 64,
+      "validation_split":0.2,
+      "verbose_training": 1
+    },
+    "callbacks":{
+        "checkpoint_monitor": "val_loss",
+        "checkpoint_mode": "min"
+    }
+}

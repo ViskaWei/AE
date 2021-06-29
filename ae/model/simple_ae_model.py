@@ -17,26 +17,40 @@ from ae.base.base_model import BaseModel
 
 
 class SimpleAEModel(BaseModel):
-    def __init__(self, config):
-        super(SimpleAEModel, self).__init__(config)
+    def __init__(self):
+        super(SimpleAEModel, self).__init__()
+        self.input_dim = None
+        self.encoder_input = None
+        self.latent_dim = None
+        self.hidden_dims = None
+        self.units = None
+        self.reg1 = None
+        self.dropout = None
+        self.lr = None
+        self.opt = None
+        self.loss = None
+        self.name = None
+
+        self.encoder = None
+        self.decoder = None
+        self.model = None
+
+
+
+
+
+    def init_from_config(self, config):
         self.input_dim = int(config.model.input_dim)
         self.encoder_input = keras.Input(shape = (self.input_dim, ), name='spec')
         self.latent_dim = int(config.model.latent_dim)
         self.hidden_dims = np.array(config.model.hidden_dims)
         self.units = self.get_units()
-
         self.reg1 = config.model.reg1
         self.dropout = config.model.dropout
-
-        self.encoder = None
-        self.decoder = None
-        self.ae = None
-
         self.lr = config.model.lr
         self.opt = self.get_opt(config.model.opt)
         self.loss = config.model.loss
         self.name = self.get_name(config.model.name)
-
 
 
     def get_opt(self, opt):
@@ -48,12 +62,12 @@ class SimpleAEModel(BaseModel):
             raise 'optimizer not working'
 
     def get_name(self, name):
-        lr_name = -np.log10(self.lr)
+        lr_name = -int(np.log10(self.lr))
 
         out_name = f'{self.loss}_lr{lr_name}_l{self.latent_dim}_h{len(self.hidden_dims)}'
         if self.dropout != 0:
             out_name = out_name + f'dp{self.dropout}_'
-        t = datetime.now().strftime("%m%d-%H%M%S")
+        t = datetime.now().strftime("%m%d_%H%M%S")
         out_name = out_name + name + '_' + t
         return out_name.replace('.', '')
 
@@ -66,7 +80,8 @@ class SimpleAEModel(BaseModel):
     def build_autoencoder(self):
         encoded = self.encoder(self.encoder_input)
         decoded = self.decoder(encoded)
-        self.ae = keras.Model(self.encoder_input, decoded, name="ae")
+        ae = keras.Model(self.encoder_input, decoded, name="ae")
+        self.model = ae
 
     def build_encoder(self):
         x = self.encoder_input
@@ -99,12 +114,13 @@ class SimpleAEModel(BaseModel):
                     ])
         return layer
 
-    def build_model(self):
+    def build_model(self, config):
+        self.init_from_config(config)
         self.build_encoder()
         self.build_decoder()
         self.build_autoencoder()
 
-        self.ae.compile(
+        self.model.compile(
             loss=self.loss,
             optimizer=self.opt,
             metrics=['acc'],

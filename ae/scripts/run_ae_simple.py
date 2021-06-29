@@ -6,8 +6,8 @@ import logging
 from tqdm import tqdm
 
 from ae.data_loader.spec_data_loader import SpecDataLoader
-from ae.models.simple_ae_model import SimpleAEModel
-
+from ae.model.simple_ae_model import SimpleAEModel
+from ae.trainer.simple_ae_trainer import SimpleAETrainer
 
 from ae.util.args import get_args
 from ae.util.config import process_config
@@ -21,8 +21,7 @@ from ae.util.config import process_config
 # logging.basicConfig(level=logging.INFO)
 # logging.info(f'RUNNING RD {RD}')
 
-# from trainers.simple_mnist_trainer import SimpleMnistModelTrainer
-# from utils.dirs import create_dirs
+
 CONFIG_PATH = '/home/swei20/AE/configs/ae/train/config.json'
 
 def main():
@@ -40,7 +39,7 @@ def main():
 
 
     print('Create the model.')
-    model = SimpleAEModel(config)
+    model = SimpleAEModel()
     model.model
     # print('Create the trainer')
     # trainer = SimpleMnistModelTrainer(model.model, data_loader.get_train_data(), config)

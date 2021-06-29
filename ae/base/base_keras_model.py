@@ -19,8 +19,8 @@ import tensorflow.keras.initializers as ki
 import tensorflow.keras.optimizers as ko
 import tensorflow.keras.activations as ka
 
-import ae.util as util
-from ae.constants import Constants
+import ae.util.util as util
+from ae.util.constants import Constants
 # from pfsspec.data.dataset import Dataset
 # from pfsspec.ml.dnn.dnnmodel import DnnModel
 #from pfsspec.ml.dnn.keras.radam import RAdam
@@ -97,9 +97,6 @@ class KerasModel(DnnModel):
 
     def add_args(self, parser):
         parser.add_argument('--name', type=str, help='Model name prefix\n')
-
-        # TODO: it's probably not used anymore, delete
-        # parser.add_argument('--wave', action='store_true', help='Include wavelength vector in prediction/training.\n')
         parser.add_argument('--levels', type=int, help='Number of levels\n')
         parser.add_argument('--units', type=int, help='Number of units\n')
 

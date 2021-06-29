@@ -4,8 +4,8 @@ from tensorflow.keras.callbacks import TensorBoard, EarlyStopping, ReduceLROnPla
 from ae.base.base_trainer import BaseTrain
 
 class SimpleAETrainer(BaseTrain):
-    def __init__(self, model, data, config):
-        super(SimpleAETrainer, self).__init__(model, data, config)
+    def __init__(self, model, config):
+        super(SimpleAETrainer, self).__init__(model, config)
         self.callbacks = []
         self.log_dir = None
 
@@ -14,7 +14,11 @@ class SimpleAETrainer(BaseTrain):
 
     def init_log_dir(self):
         self.log_dir = os.path.join(self.root, 'logs/fit/', self.model.name)
-        os.mkdir(self.log_dir)
+        try: 
+            os.mkdir(self.log_dir)
+        except:
+            pass
+
 
     def init_callbacks(self):
         # self.callbacks.append(
@@ -52,13 +56,13 @@ class SimpleAETrainer(BaseTrain):
                 factor=0.1),
         )
 
-    def train(self, ep=None):
+    def train(self, data, ep=None):
         # if self.model.model is None:
         #     self.model.build_model(self.config)
 
         epochs=ep or self.config.trainer.epoch
         history = self.model.model.fit(
-            self.data[0], self.data[1],
+            data[0], data[1],
             epochs=epochs,
             verbose=self.config.trainer.verbose_training,
             batch_size=self.config.trainer.batch_size,

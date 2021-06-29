@@ -84,11 +84,12 @@ class SimpleAEModel(BaseModel):
         self.model = ae
 
     def build_encoder(self):
-        x = self.encoder_input
-        for ii, unit in enumerate(self.units[1:]):
-            name = 'encod' + str(ii)
+        x = kl.Dense(self.hidden_dims[0], activation=ka.tanh, name='en_tanh_0')(self.encoder_input)
+        x = kl.Dropout(self.dropout, name='en_dp_0')(x)
+        for ii, unit in enumerate(self.hidden_dims[1:]):
+            name = 'encod_' + str(ii + 1)
             x = self.add_dense_layer(unit, dp_rate=self.dropout, reg1=self.reg1, name=name)(x)
-
+        x = kl.Dense(self.latent_dim, activation=ka.tanh, name='encode_latent')(x)
         self.encoder = keras.Model(self.encoder_input, x, name="encoder")
 
     def build_decoder(self):
@@ -97,8 +98,7 @@ class SimpleAEModel(BaseModel):
         for ii, unit in enumerate(self.hidden_dims[::-1]):
             name = 'decod' + str(ii)
             x = self.add_dense_layer(unit, dp_rate=self.dropout, reg1=self.reg1, name=name)(x)
-        x = kl.Dense(self.input_dim, name='last')(x)
-
+        x = kl.Dense(self.input_dim, name='de_last_linear')(x)
         self.decoder = keras.Model(latent_input, x, name="decoder")
 
     def add_dense_layer(self, unit, dp_rate=0., reg1=None, name=None):

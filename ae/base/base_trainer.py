@@ -1,7 +1,6 @@
 class BaseTrain(object):
-    def __init__(self, model, data, config):
+    def __init__(self, model, config):
         self.model = model
-        self.data = data
         self.config = config
         self.root = "/home/swei20/AE/"
 

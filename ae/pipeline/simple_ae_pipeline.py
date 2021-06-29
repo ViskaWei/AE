@@ -57,5 +57,5 @@ class SimpleAEPipeline(BasePipeline):
     def run_step_model(self, config, data):
         mm = SimpleAEModel()
         mm.build_model(config)
-        tt = SimpleAETrainer(mm, data, config)
-        history = tt.train()
+        tt = SimpleAETrainer(mm, config)
+        history = tt.train(data)

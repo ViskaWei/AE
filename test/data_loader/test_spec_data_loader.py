@@ -11,7 +11,8 @@ from ae.util.config import process_config
 class TestSpecDataLoader(TestBase):
 
     def test_get_train_data(self):
-        CONFIG_PATH = '/home/swei20/AE/configs/ae/train/config.json'
+        CONFIG_PATH = "/home/swei20/AE/configs/ae/train/config.json"
+        
         args = get_args(default=CONFIG_PATH)
         config = process_config(args.config)
         data_loader = SpecDataLoader(config)

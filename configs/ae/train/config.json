@@ -17,8 +17,8 @@
       "opt": "adam"
     },
     "trainer":{
-      "ep": 20,
-      "batch_size": 64,
+      "epoch": 20,
+      "batch_size": 32,
       "validation_split":0.1,
       "verbose_training": true
     },

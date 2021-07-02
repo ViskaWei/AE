@@ -22,3 +22,19 @@ done
 #         done
 #     done
 # done
+
+
+CONFIG=./configs/ae/train/pca_config.json
+LR=(0.01 0.003 0.01)
+
+for HD in "${HD[@]}"; do
+    for LD in "${LD[@]}"; do
+        for dp in "${DP[@]}"; do
+            for lr in "${LR[@]}"; do
+                ./scripts/ae.sh \
+                    --config $config \
+                    --lr $lr
+            done
+        done
+    done
+done

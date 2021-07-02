@@ -3,27 +3,27 @@
     "data": {
       "dir":"./data",
       "filename": "pca.h5",
-      "train": "flux",
+      "train": "flux_std",
       "norm": "no"
     },
     "model":{
       "aug": true,
       "name": "t_act_",
       "input_dim": 300,
-      "latent_dim": 32,
-      "hidden_dims": [256, 128],
+      "latent_dim": 8,
+      "hidden_dims": [256, 128, 64],
       "dropout": 0.0,
-      "lr": 0.01,
-      "reg1": 0.00001,
+      "lr": 0.003,
+      "reg1": 0.000001,
       "loss": "mae",
       "opt": "adam",
       "batchnorm": false,
-      "act_in": "tanh",
-      "act_em": "linear",
-      "act_hd": "leaky"
+      "act_in": "linear",
+      "act_em": "relu",
+      "act_hd": "relu"
     },
     "trainer":{
-      "epoch": 20,
+      "epoch": 5,
       "batch_size": 16,
       "validation_split":0.3,
       "verbose": 1

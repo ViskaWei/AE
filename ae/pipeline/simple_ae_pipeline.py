@@ -28,6 +28,8 @@ class SimpleAEPipeline(BasePipeline):
         super().add_args(parser)
         parser.add_argument('--lr', type=float, default=None, help='Learning Rate\n' )
         parser.add_argument('--epoch', type=int, default=None, help='Num of Epochs\n' )
+        parser.add_argument('--verbose', type=int, default=None, help='Verbose Training\n' )
+
 
     def prepare(self):
         super().prepare()
@@ -41,21 +43,49 @@ class SimpleAEPipeline(BasePipeline):
 
     def apply_trainer_args(self):
         self.update_config("trainer", "epoch")
+        self.update_config("trainer", "verbose")
+        logging.info(self.config.trainer)
+
         
-    def run(self, config=None):
+    def run(self):
+        super().run()
+        data = self.run_step_data_loader()
+        self.run_step_model(data)
+        
+    def run_step_data_loader(self, config=None):
         config = config or self.config
-        data = self.run_step_data_loader(config)
-        self.run_step_model(config, data)
-        
-    def run_step_data_loader(self, config):
         ds = SpecDataLoader()
         ds.init_from_config(config)
         data = ds.get_train_data()
         logging.info(f"train data size: {data[0].shape}")
         return data
 
-    def run_step_model(self, config, data):
+    def run_step_model(self, data, config=None):
+        config = config or self.config
         mm = SimpleAEModel()
         mm.build_model(config)
+        # logging.info(mm.model.summary())
+        # logging.info(mm.encoder.summary())
+        # logging.info(mm.decoder.summary())
+
+
+        logging.info(f'Loss: {mm.model.loss}')
         tt = SimpleAETrainer(mm, config)
         history = tt.train(data)
+        if not config.trainer.verbose:
+            acc, val_acc = self.get_last_epoch_accs(mm.model)
+            logging.info(f"ACC {acc}% | VACC {val_acc}%")
+
+
+    def get_last_epoch_accs(self, model):
+        val_acc = model.history.history['val_acc'][-1]
+        acc = model.history.history['acc'][-1]
+        return np.around(acc*100, 2), np.around(val_acc*100, 2)
+
+
+
+
+    def finish(self):
+        super().finish()
+        logging.info(self.config.data)
+        logging.info(self.config.model)

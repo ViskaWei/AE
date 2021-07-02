@@ -1,32 +1,31 @@
 {
-  
     "data": {
       "dir":"./data",
       "filename": "pca.h5",
-      "train": "flux",
+      "train": "flux_std",
       "norm": "no"
     },
     "model":{
       "aug": true,
       "name": "t_act_",
       "input_dim": 300,
-      "latent_dim": 32,
-      "hidden_dims": [256, 128],
+      "latent_dim": 300,
+      "hidden_dims": [],
       "dropout": 0.0,
-      "lr": 0.01,
-      "reg1": 0.00001,
+      "lr": 0.001,
+      "reg1": 0.1,
       "loss": "mae",
       "opt": "adam",
       "batchnorm": false,
       "act_in": "tanh",
       "act_em": "linear",
-      "act_hd": "leaky"
+      "act_hd": "linear"
     },
     "trainer":{
-      "epoch": 20,
-      "batch_size": 16,
-      "validation_split":0.3,
-      "verbose": 1
+      "epoch": 100,
+      "batch_size": 64,
+      "validation_split":0.2,
+      "verbose": 0
     },
     "callbacks":{
         "checkpoint_monitor": "val_loss",

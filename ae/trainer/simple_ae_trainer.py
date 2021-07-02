@@ -44,14 +44,14 @@ class SimpleAETrainer(BaseTrain):
         self.callbacks.append(
             EarlyStopping(
                 monitor='loss', 
-                patience=6
+                patience=20
             )
         )
 
         self.callbacks.append(
             ReduceLROnPlateau(
                 monitor='loss', 
-                patience=3, 
+                patience=7, 
                 min_lr=0., 
                 factor=0.1),
         )
@@ -64,7 +64,7 @@ class SimpleAETrainer(BaseTrain):
         history = self.model.model.fit(
             data[0], data[1],
             epochs=epochs,
-            verbose=self.config.trainer.verbose_training,
+            verbose=self.config.trainer.verbose,
             batch_size=self.config.trainer.batch_size,
             validation_split=self.config.trainer.validation_split,
             callbacks=self.callbacks,

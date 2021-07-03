@@ -6,7 +6,8 @@ import logging
 from tqdm import tqdm
 
 from ae.base.base_pipeline import BasePipeline
-from ae.data_loader.spec_data_loader import SpecDataLoader
+# from ae.data_loader.spec_data_loader import SpecDataLoader
+from ae.data_loader.pc_data_loader import PcDataLoader
 from ae.model.simple_ae_model import SimpleAEModel
 from ae.trainer.simple_ae_trainer import SimpleAETrainer
 
@@ -27,19 +28,30 @@ class SimpleAEPipeline(BasePipeline):
     def add_args(self, parser):
         super().add_args(parser)
         parser.add_argument('--lr', type=float, default=None, help='Learning Rate\n' )
+        parser.add_argument('--dropout', type=float, default=None, help='Dropout Rate\n' )
+        # parser.add_argument('--std-rate', type=float, default=None, help='std scaled Rate\n' )
+        
         parser.add_argument('--epoch', type=int, default=None, help='Num of Epochs\n' )
         parser.add_argument('--verbose', type=int, default=None, help='Verbose Training\n' )
 
 
     def prepare(self):
         super().prepare()
+        self.apply_data_args()
         self.apply_model_args()
         self.apply_trainer_args()
         # self.apply_norm_args()
         # self.apply_name_args()
+    def apply_data_args(self):
+        # self.update_config("data", "std_rate")
+        logging.info(self.config.data)
+
 
     def apply_model_args(self):
         self.update_config("model", "lr")
+        self.update_config("model", "dropout")
+        logging.info(self.config.model)
+
 
     def apply_trainer_args(self):
         self.update_config("trainer", "epoch")
@@ -54,7 +66,8 @@ class SimpleAEPipeline(BasePipeline):
         
     def run_step_data_loader(self, config=None):
         config = config or self.config
-        ds = SpecDataLoader()
+        # ds = SpecDataLoader()
+        ds = PcDataLoader()
         ds.init_from_config(config)
         data = ds.get_train_data()
         logging.info(f"train data size: {data[0].shape}")
@@ -87,5 +100,7 @@ class SimpleAEPipeline(BasePipeline):
 
     def finish(self):
         super().finish()
+
         logging.info(self.config.data)
         logging.info(self.config.model)
+        logging.info("=============================================================")

@@ -17,7 +17,7 @@ class BasePipeline(object):
         
     def add_args(self, parser):
         parser.add_argument(
-                '-c', '--config',
+                '--config',
                 dest='config',
                 metavar='C',
                 default=None,

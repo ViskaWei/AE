@@ -10,7 +10,7 @@ import tensorflow.keras.regularizers as kr
 import tensorflow.keras.activations as ka
 from tensorflow.keras import Sequential as ks
 from tensorflow.keras import optimizers as ko
-
+from tensorflow.keras.metrics import MeanSquaredError, RootMeanSquaredError
 # import tensorflow.keras.initializers as ki
 
 from ae.base.base_model import BaseModel
@@ -53,6 +53,7 @@ class SimpleAEModel(BaseModel):
         self.act_em = config.model.act_em
         self.act_hd = config.model.act_hd
         self.aug = config.model.aug
+        self.ep = config.trainer.epoch
 
         self.name = self.get_name(config.model.name)
         logging.info(f"NAME: {self.name}")
@@ -67,7 +68,7 @@ class SimpleAEModel(BaseModel):
 
     def get_name(self, name):
         lr_name = -int(np.log10(self.lr))
-        out_name = f'{self.loss}_lr{lr_name}_l{self.latent_dim}_'
+        out_name = f'ep{self.ep}_{self.loss}_lr{lr_name}_{self.input_dim}_l{self.latent_dim}_'
         for hid_dim in self.hidden_dims:
             out_name = out_name + "h" + str(hid_dim) + "_"
         t = datetime.now().strftime("%m%d_%H%M%S")
@@ -151,7 +152,9 @@ class SimpleAEModel(BaseModel):
         self.model.compile(
             loss=self.loss,
             optimizer=self.opt,
-            metrics=['acc'],
+            # metrics=['acc'],
+            metrics=[MeanSquaredError()]
+            # metrics=[RootMeanSquaredError()]
         )
 
 

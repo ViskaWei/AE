@@ -8,6 +8,7 @@ class SimpleAETrainer(BaseTrain):
         super(SimpleAETrainer, self).__init__(model, config)
         self.callbacks = []
         self.log_dir = None
+        self.x_train = None
 
         self.init_log_dir()
         self.init_callbacks()
@@ -50,8 +51,8 @@ class SimpleAETrainer(BaseTrain):
 
         self.callbacks.append(
             ReduceLROnPlateau(
-                monitor='loss', 
-                patience=7, 
+                monitor='val_loss', 
+                patience=5, 
                 min_lr=0., 
                 factor=0.1),
         )
@@ -59,7 +60,7 @@ class SimpleAETrainer(BaseTrain):
     def train(self, data, ep=None):
         # if self.model.model is None:
         #     self.model.build_model(self.config)
-
+        self.x_train = data[0]
         epochs=ep or self.config.trainer.epoch
         history = self.model.model.fit(
             data[0], data[1],
@@ -70,3 +71,10 @@ class SimpleAETrainer(BaseTrain):
             callbacks=self.callbacks,
             shuffle=True
         )
+
+    def eval(self, full_eigv):
+        self.eigv = full_eigv[:, :self.model.input_dim]    
+        self.ae_pred = self.model.model.predict(self.x_train)
+        self.flux_org = self.x_train.dot(eigv.T)
+        self.flux_rec = ae_pred.dot(eigv.T)
+        self.abs_err = abs(flux_org - flux_rec)

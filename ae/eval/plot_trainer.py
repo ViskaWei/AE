@@ -1,11 +1,11 @@
 import matplotlib.pyplot as plt
 
 class Eval(object):
-    def __init__(self, wave, org, rec, err=None):
-        self.org=org
-        self.rec=rec
+    def __init__(self, wave, tt):
+        self.org=tt.flux_org
+        self.rec=tt.flux_rec
         self.wave=wave
-        self.abs_err= err
+        self.abs_err= tt.abs_err
     
     def get_abs_err(self):
         return abs(self.org - self.rec)

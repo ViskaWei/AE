@@ -1,5 +1,6 @@
 import os
 import h5py
+import json
 import numpy as np
 # import timeit
 import logging
@@ -24,6 +25,7 @@ class SimpleAEPipeline(BasePipeline):
         super().__init__()
 
         self.trace = trace
+        # self.model = None
 
     def add_args(self, parser):
         super().add_args(parser)
@@ -86,8 +88,17 @@ class SimpleAEPipeline(BasePipeline):
         tt = SimpleAETrainer(mm, config)
         history = tt.train(data)
         if not config.trainer.verbose:
-            acc, val_acc = self.get_last_epoch_accs(mm.model)
-            logging.info(f"ACC {acc}% | VACC {val_acc}%")
+            prints = "|"
+            for key, value in mm.model.history.history.items():
+                prints = prints +  f"{key}: {np.around(value[-1],3)} | "
+            logging.info(prints)
+            # acc, val_acc = self.get_last_epoch_accs(mm.model)
+            # logging.info(f"ACC {acc}% | VACC {val_acc}%")
+        if config.trainer.save: 
+            mm.save()
+
+    # def run_step_save(self, model):
+    #     self.model.save()
 
 
     def get_last_epoch_accs(self, model):
@@ -96,11 +107,8 @@ class SimpleAEPipeline(BasePipeline):
         return np.around(acc*100, 2), np.around(val_acc*100, 2)
 
 
-
-
     def finish(self):
         super().finish()
-
         logging.info(self.config.data)
         logging.info(self.config.model)
         logging.info("=============================================================")

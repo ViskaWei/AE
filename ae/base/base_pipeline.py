@@ -152,6 +152,8 @@ class BasePipeline(object):
         pass
 
     def execute(self):
+        logging.info("================================LETS GO=================================")
+
         self.prepare()
         self.run()
         self.finish()

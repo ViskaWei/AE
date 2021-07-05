@@ -118,3 +118,4 @@ datasets/
 *junk
 *logs
 *trained_model
+*.out

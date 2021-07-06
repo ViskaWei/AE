@@ -75,6 +75,6 @@ class SimpleAETrainer(BaseTrain):
     def eval(self, full_eigv):
         self.eigv = full_eigv[:, :self.model.input_dim]    
         self.ae_pred = self.model.model.predict(self.x_train)
-        self.flux_org = self.x_train.dot(eigv.T)
-        self.flux_rec = ae_pred.dot(eigv.T)
+        self.flux_org = self.x_train.dot(self.eigv.T)
+        self.flux_rec = ae_pred.dot(self.eigv.T)
         self.abs_err = abs(flux_org - flux_rec)

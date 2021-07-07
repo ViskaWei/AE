@@ -13,6 +13,12 @@ class BaseDataLoader(object):
         raise NotImplementedError
 
 
+    def get_centered_data(self, x):
+        x_mean =np.mean(x, axis = 0)
+        assert x_mean.shape == x[0].shape
+        x_scaled = x -  x_mean
+        return x_scaled
+        
     # def get_std_scaled_data(self, r, x):
     #     x_std = x.std(0)
     #     assert x_std.shape == x[0].shape

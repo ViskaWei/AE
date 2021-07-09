@@ -67,7 +67,8 @@ class SimpleAEModel(BaseModel):
             raise 'optimizer not working'
 
     def get_name(self, name):
-        lr_name = -int(np.log10(self.lr))
+        # lr_name = -int(np.log10(self.lr))
+        lr_name=self.lr
         out_name = f'ep{self.ep}_{self.loss}_lr{lr_name}_{self.input_dim}_l{self.latent_dim}_'
         for hid_dim in self.hidden_dims:
             out_name = out_name + "h" + str(hid_dim) + "_"

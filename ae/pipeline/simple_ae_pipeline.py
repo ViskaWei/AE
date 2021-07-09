@@ -35,6 +35,11 @@ class SimpleAEPipeline(BasePipeline):
         
         parser.add_argument('--epoch', type=int, default=None, help='Num of Epochs\n' )
         parser.add_argument('--verbose', type=int, default=None, help='Verbose Training\n' )
+        parser.add_argument('--hidden-dims', 
+                            type=lambda s: [int(item) for item in s.split(',')], 
+                            nargs='+', 
+                            default=None, help='Hidden layers\n' )
+        parser.add_argument('--save', type=int, default=None, help='saving model\n' )
 
 
     def prepare(self):
@@ -52,12 +57,18 @@ class SimpleAEPipeline(BasePipeline):
     def apply_model_args(self):
         self.update_config("model", "lr")
         self.update_config("model", "dropout")
+        if not isinstance(self.args["hidden_dims"][0], int):
+            self.args["hidden_dims"] = self.args["hidden_dims"][0]
+        self.update_config("model", "hidden_dims")
+
         logging.info(self.config.model)
 
 
     def apply_trainer_args(self):
         self.update_config("trainer", "epoch")
         self.update_config("trainer", "verbose")
+        self.update_config("trainer", "save")
+
         logging.info(self.config.trainer)
 
         
@@ -88,7 +99,8 @@ class SimpleAEPipeline(BasePipeline):
         tt = SimpleAETrainer(mm, config)
         history = tt.train(data)
         if not config.trainer.verbose:
-            prints = "|"
+            ep = len(mm.model.history.history["lr"])
+            prints =f"| EP {ep} |"
             for key, value in mm.model.history.history.items():
                 prints = prints +  f"{key}: {np.around(value[-1],3)} | "
             logging.info(prints)

@@ -3,7 +3,7 @@
     "data": {
       "dir":"./data",
       "filename": "pc32.h5",
-      "train": "flux"
+      "train": "flux32ms"
     },
     "model":{
       "aug": 1,

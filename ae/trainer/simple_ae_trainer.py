@@ -14,7 +14,7 @@ class SimpleAETrainer(BaseTrain):
         self.init_callbacks()
 
     def init_log_dir(self):
-        self.log_dir = os.path.join(self.root, 'logs/fit/', self.model.name)
+        self.log_dir = os.path.join(self.root, 'logs/pc/', self.model.name)
         try: 
             os.mkdir(self.log_dir)
         except:
@@ -76,5 +76,5 @@ class SimpleAETrainer(BaseTrain):
         self.eigv = full_eigv[:, :self.model.input_dim]    
         self.ae_pred = self.model.model.predict(self.x_train)
         self.flux_org = self.x_train.dot(self.eigv.T)
-        self.flux_rec = ae_pred.dot(self.eigv.T)
-        self.abs_err = abs(flux_org - flux_rec)
+        self.flux_rec = self.ae_pred.dot(self.eigv.T)
+        self.abs_err = abs(self.flux_org - self.flux_rec)

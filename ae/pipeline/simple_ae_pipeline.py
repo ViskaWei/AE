@@ -57,9 +57,10 @@ class SimpleAEPipeline(BasePipeline):
     def apply_model_args(self):
         self.update_config("model", "lr")
         self.update_config("model", "dropout")
-        if not isinstance(self.args["hidden_dims"][0], int):
-            self.args["hidden_dims"] = self.args["hidden_dims"][0]
-        self.update_config("model", "hidden_dims")
+        if self.args["hidden_dims"] is not None:
+            if not isinstance(self.args["hidden_dims"][0], int):
+                self.args["hidden_dims"] = self.args["hidden_dims"][0]
+            self.update_config("model", "hidden_dims")
 
         logging.info(self.config.model)
 

@@ -3,21 +3,21 @@
   "data": {
     "dir":"./data",
     "filename": "pc32.h5",
-    "train": "fluxms"
+    "train": "flux32ms"
   },
   "model":{
     "aug": 1,
-    "name": "pc32ms_r4",
+    "name": "pc32ms",
     "input_dim": 32,
     "latent_dim": 5,
     "hidden_dims": [128, 64],
     "dropout": 0.001,
     "lr": 0.003,
-    "reg1": 0.0001,
+    "reg1": 0.00001,
     "loss": "mse",
     "opt": "adam",
     "batchnorm": 0,
-    "act_in": "leaky",
+    "act_in": "linear",
     "act_em": "leaky",
     "act_hd": "leaky"
   },

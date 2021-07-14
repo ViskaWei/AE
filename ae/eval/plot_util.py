@@ -9,17 +9,26 @@ def plot_err(org, rec):
         ax.set_ylabel(f"AE - {idx + 1} ")
         ax.grid(1)
 
-def plot_s(s, ax=None, xlog=0):
+def plot_s(s, ax=None, xlog=0, ylog=1):
     ax = ax or plt.gca()
     ss =  1 - np.cumsum(s) / np.sum(s)
     ax.plot(np.arange(len(ss)), ss, 'o-', color='r', ms=1, lw=0.6)
 
-    ax.set_yscale('log')
+    if ylog: 
+        ax.set_yscale('log')
+        ax.set_ylabel('Log Singular Value Ratio')
+    else:
+        ax.set_ylabel('Singular Value Ratio')
 
-    ax.set_ylabel('Log Singular Value Ratio')
     if xlog:
         ax.set_xscale('log')
         ax.set_xlabel('Log Rank')    
     # ax.hline
     ax.grid()
     ax.legend()
+
+def plot_traj(data, i, j, T_eff, ax=None):
+    ax = ax or plt.gca()
+    ax.scatter(data[:,i], data[:,j], c=T_eff, cmap = "Spectral")
+    ax.set_xlabel(f"Latent {i}")
+    ax.set_ylabel(f"Latent {j}")

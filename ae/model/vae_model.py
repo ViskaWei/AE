@@ -21,17 +21,18 @@ from .simple_ae_model import SimpleAEModel
 class VAEModel(SimpleAEModel):
     def __init__(self):
         super(VAEModel, self).__init__()
-        self.model_name = 'vae_model'
+        self.stddev = None # stddev of the latent variable       
 
     def init_from_config(self, config):
-        return super().init_from_config(config)
+        super().init_from_config(config)
+        self.stddev = config.model.stddev or 0.1
 
     def build_VAE(self):
         z_mean, z_log_sigma, z = self.encoder(self.encoder_input)
         out = self.decoder(z)
         vae = keras.Model(self.encoder_input, out, name="ae")
-        self.get_vae_loss(out, z_mean, z_log_sigma)
-        vae.add_loss(self.vae_loss)
+        vae_loss = self.get_vae_loss(out, z_mean, z_log_sigma)
+        vae.add_loss(vae_loss)
         self.model = vae
 
     def build_encoder(self):
@@ -41,10 +42,10 @@ class VAEModel(SimpleAEModel):
         z = kl.Lambda(self.sampling)([z_mean, z_log_sigma])
         self.encoder = keras.Model(self.encoder_input, [z_mean, z_log_sigma, z], name="encoder")
         
-    def sampling(self, args, stddev=0.1):
+    def sampling(self, args):
         z_mean, z_log_sigma = args
         epsilon = K.random_normal(shape=(K.shape(z_mean)[0], self.latent_dim),
-                                mean=0., stddev=stddev)
+                                mean=0., stddev=self.stddev)
         return z_mean + K.exp(z_log_sigma) * epsilon
 
     def get_vae_loss(self, outputs, z_mean, z_log_sigma):
@@ -54,8 +55,7 @@ class VAEModel(SimpleAEModel):
         kl_loss = K.sum(kl_loss, axis=-1)
         kl_loss *= -0.5
         vae_loss = K.mean(reconstruction_loss + kl_loss)
-        self.vae_loss = vae_loss
-
+        return vae_loss 
 
 
     def build_model(self, config):

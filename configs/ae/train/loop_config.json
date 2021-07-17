@@ -6,6 +6,7 @@
     "train": "flux32ms"
   },
   "model":{
+    "type": "ae",
     "aug": 1,
     "name": "pc32ms",
     "input_dim": 32,

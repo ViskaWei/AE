@@ -38,6 +38,7 @@ class SimpleAEModel(BaseModel):
 
 
     def init_from_config(self, config):
+        self.type = config.model.type
         self.input_dim = int(config.model.input_dim)
         self.encoder_input = keras.Input(shape = (self.input_dim, ), name='spec')
         self.latent_dim = int(config.model.latent_dim)
@@ -69,7 +70,7 @@ class SimpleAEModel(BaseModel):
     def get_name(self, name):
         # lr_name = -int(np.log10(self.lr))
         lr_name=self.lr
-        out_name = f'ep{self.ep}_{self.loss}_lr{lr_name}_{self.input_dim}_l{self.latent_dim}_'
+        out_name = f'{self.type}_ep{self.ep}_{self.loss}_lr{lr_name}_{self.input_dim}_l{self.latent_dim}_'
         for hid_dim in self.hidden_dims:
             out_name = out_name + "h" + str(hid_dim) + "_"
         t = datetime.now().strftime("%m%d_%H%M%S")

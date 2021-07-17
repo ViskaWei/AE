@@ -1,4 +1,5 @@
 import numpy as np
+import seaborn as sns
 import matplotlib.pyplot as plt
 
 def plot_err(org, rec):
@@ -32,3 +33,14 @@ def plot_traj(data, i, j, T_eff, ax=None):
     ax.scatter(data[:,i], data[:,j], c=T_eff, cmap = "Spectral")
     ax.set_xlabel(f"Latent {i}")
     ax.set_ylabel(f"Latent {j}")
+
+def plot_latent_on(dfen, para):
+    sns.pairplot(
+        dfen,
+        x_vars=[f"e{i}" for i in range(1,6)],
+        y_vars=[f"e{i}" for i in range(1,6)],
+        hue=para,
+        plot_kws=dict(marker="o", s=2, edgecolor="none"),
+        diag_kws=dict(fill=False),
+        palette="Spectral"
+    )

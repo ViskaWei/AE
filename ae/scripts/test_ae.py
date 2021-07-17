@@ -1,12 +1,12 @@
 import sys
-from ae.pipeline.simple_ae_pipeline import SimpleAEPipeline
+from ae.pipeline.ae_pipeline import AEPipeline
 
 def main():
-    cmd = "main --config /home/swei20/AE/configs/ae/train/test_config.json"
+    cmd = "main --config /home/swei20/AE/configs/test_config.json"
     sys.argv = cmd.split()
     print(sys.argv)
 
-    p=SimpleAEPipeline()
+    p=AEPipeline()
     p.execute()
 
 if __name__ == "__main__":

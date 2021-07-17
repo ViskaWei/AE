@@ -26,21 +26,48 @@ class VAEModel(SimpleAEModel):
     def init_from_config(self, config):
         return super().init_from_config(config)
 
-    def create_model(self, input_shape, output_shape, **kwargs):
-        self.model = ks.Sequential()    
-        self.model.add(kl.InputLayer(input_shape=input_shape))
-        self.model.add(kl.Flatten())
-        self.model.add(kl.Dense(units=128, activation=ka.relu, kernel_regularizer=kr.l2(0.01)))
-        self.model.add(kl.Dense(units=64, activation=ka.relu, kernel_regularizer=kr.l2(0.01)))
+    def build_VAE(self):
+        z_mean, z_log_sigma, z = self.encoder(self.encoder_input)
+        out = self.decoder(z)
+        vae = keras.Model(self.encoder_input, out, name="ae")
+        self.get_vae_loss(out, z_mean, z_log_sigma)
+        vae.add_loss(self.vae_loss)
+        self.model = vae
 
     def build_encoder(self):
-        x = self.encode(self.encoder_input)
-        z_mean = kl.Dense(latent_dim)(h)
-        z_log_sigma = kl.Dense(latent_dim)(h)
-        self.encoder = 
+        h = self.encode(self.encoder_input)
+        z_mean = kl.Dense(self.latent_dim)(h)
+        z_log_sigma = kl.Dense(self.latent_dim)(h)
+        z = kl.Lambda(self.sampling)([z_mean, z_log_sigma])
+        self.encoder = keras.Model(self.encoder_input, [z_mean, z_log_sigma, z], name="encoder")
         
-    def sampling(self, args):
+    def sampling(self, args, stddev=0.1):
         z_mean, z_log_sigma = args
-        epsilon = K.random_normal(shape=(K.shape(z_mean)[0], latent_dim),
-                                mean=0., stddev=0.1)
+        epsilon = K.random_normal(shape=(K.shape(z_mean)[0], self.latent_dim),
+                                mean=0., stddev=stddev)
         return z_mean + K.exp(z_log_sigma) * epsilon
+
+    def get_vae_loss(self, outputs, z_mean, z_log_sigma):
+        reconstruction_loss = keras.losses.mse(self.encoder_input, outputs)
+        reconstruction_loss *= self.input_dim
+        kl_loss = 1 + z_log_sigma - K.square(z_mean) - K.exp(z_log_sigma)
+        kl_loss = K.sum(kl_loss, axis=-1)
+        kl_loss *= -0.5
+        vae_loss = K.mean(reconstruction_loss + kl_loss)
+        self.vae_loss = vae_loss
+
+
+
+    def build_model(self, config):
+        self.init_from_config(config)
+        self.build_encoder()
+        self.build_decoder()
+        self.build_VAE()
+
+        self.model.compile(
+            # loss=self.vae_loss,
+            optimizer=self.opt,
+            # metrics=['acc'],
+            metrics=[MeanSquaredError()]
+            # metrics=[RootMeanSquaredError()]
+        )

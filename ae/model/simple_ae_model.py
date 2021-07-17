@@ -89,15 +89,14 @@ class SimpleAEModel(BaseModel):
         return units 
 
     def build_autoencoder(self):
-        self.build_encoder()
-        self.build_decoder()
-
         out = self.decode(self.encode(self.encoder_input))
         ae = keras.Model(self.encoder_input, out, name="ae")
         self.model = ae
 
     def build_encoder(self):
-        self.encoder = keras.Model(self.encoder_input, self.encode(self.encoder_input), name="encoder")
+        x = self.encode(encoder_input)
+        x = self.encode_last_hidden(x)
+        self.encoder = keras.Model(self.encoder_input, x, name="encoder")
         # self.encoder.summary()
 
     def build_decoder(self):
@@ -122,14 +121,16 @@ class SimpleAEModel(BaseModel):
                     if self.bn: 
                         x = kl.BatchNormalization()(x)
                 #   x = kl.Dropout(self.dropout)(x)
+        return x  
 
+    def encode_last_hidden(self, x):
         x = kl.Dense(self.latent_dim, kernel_regularizer=kr.l2(self.reg1), name='embed_in')(x)
         if self.aug: 
             x = self.add_activation_layer(self.act_em)(x)
             if self.bn: 
                 x = kl.BatchNormalization()(x)
         return x
-        
+
 
     def decode(self, x):
         if len(self.hidden_dims) > 0:        
@@ -150,7 +151,7 @@ class SimpleAEModel(BaseModel):
                         x = kl.BatchNormalization()(x)
         x = kl.Dense(self.input_dim, kernel_regularizer=kr.l2(self.reg1), name='decod_out')(x)
         return x
-
+    
 
     def build_model(self, config):
         self.init_from_config(config)

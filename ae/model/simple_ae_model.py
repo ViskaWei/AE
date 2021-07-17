@@ -89,13 +89,23 @@ class SimpleAEModel(BaseModel):
         return units 
 
     def build_autoencoder(self):
-        encoded = self.encoder(self.encoder_input)
-        decoded = self.decoder(encoded)
-        ae = keras.Model(self.encoder_input, decoded, name="ae")
+        self.build_encoder()
+        self.build_decoder()
+
+        out = self.decode(self.encode(self.encoder_input))
+        ae = keras.Model(self.encoder_input, out, name="ae")
         self.model = ae
 
     def build_encoder(self):
-        x = self.encoder_input
+        self.encoder = keras.Model(self.encoder_input, self.encode(self.encoder_input), name="encoder")
+        # self.encoder.summary()
+
+    def build_decoder(self):
+        latent_input = keras.Input(shape=(self.latent_dim,))
+        self.decoder = keras.Model(latent_input, self.decode(latent_input), name="decoder")
+        # self.decoder.summary()
+
+    def encode(self, x):
         if len(self.hidden_dims) > 0:
             x = kl.Dense(self.units[1], kernel_regularizer=kr.l2(self.reg1), name='encode_in')(x)
             
@@ -118,12 +128,10 @@ class SimpleAEModel(BaseModel):
             x = self.add_activation_layer(self.act_em)(x)
             if self.bn: 
                 x = kl.BatchNormalization()(x)
+        return x
+        
 
-        self.encoder = keras.Model(self.encoder_input, x, name="encoder")
-
-    def build_decoder(self):
-        latent_input = keras.Input(shape=(self.latent_dim,))
-        x = latent_input
+    def decode(self, x):
         if len(self.hidden_dims) > 0:        
             x = kl.Dense(self.hidden_dims[-1], kernel_regularizer=kr.l2(self.reg1), name='embed_out')(x)
                 
@@ -141,7 +149,7 @@ class SimpleAEModel(BaseModel):
                     if self.bn: 
                         x = kl.BatchNormalization()(x)
         x = kl.Dense(self.input_dim, kernel_regularizer=kr.l2(self.reg1), name='decod_out')(x)
-        self.decoder = keras.Model(latent_input, x, name="decoder")
+        return x
 
 
     def build_model(self, config):

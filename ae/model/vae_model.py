@@ -1,58 +1,46 @@
-import tensorflow as tf
+import os
 import numpy as np
-import keras
+import pandas as pd
+import logging
+import h5py
+from datetime import datetime
+from tensorflow import keras
+import tensorflow.keras.layers as kl
+import tensorflow.keras.regularizers as kr
+import tensorflow.keras.activations as ka
+from tensorflow.keras import Sequential as ks
+from tensorflow.keras import optimizers as ko
+from tensorflow.keras.metrics import MeanSquaredError, RootMeanSquaredError
+# import tensorflow.keras.initializers as ki
+from tensorflow.keras import backend as K
 
 
-class VAE(keras.Model):
-    def __init__(self, encoder, decoder, **kwargs):
-        super(VAE, self).__init__(**kwargs)
-        self.encoder = encoder
-        self.decoder = decoder
-        self.total_loss_tracker = keras.metrics.Mean(name="total_loss")
-        self.reconstruction_loss_tracker = keras.metrics.Mean(
-            name="reconstruction_loss"
-        )
-        self.kl_loss_tracker = keras.metrics.Mean(name="kl_loss")
-        self.reconstruction_loss_fn = keras.losses.mse
-        # self.reconstruction_loss_fn = keras.losses.binary_crossentropy
+from ae.base.base_model import BaseModel
+from .simple_ae_model import SimpleAEModel
 
-    @property
-    def metrics(self):
-        return [
-            self.total_loss_tracker,
-            self.reconstruction_loss_tracker,
-            self.kl_loss_tracker,
-        ]
+class VAEModel(SimpleAEModel):
+    def __init__(self):
+        super(VAEModel, self).__init__()
+        self.model_name = 'vae_model'
 
-    def train_step(self, data):
-        with tf.GradientTape() as tape:
-            z_mean, z_log_var, z = self.encoder(data)
-            reconstruction = self.decoder(z)
-            # print(data.shape, reconstruction.shape)
-            summ = self.reconstruction_loss_fn(data, reconstruction)
-            reconstruction_loss = tf.reduce_mean(summ)
-            # reconstruction_loss = tf.reduce_sum(summ)
+    def init_from_config(self, config):
+        return super().init_from_config(config)
 
-            kl_loss = -0.5 * (1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var))
-            kl_loss = tf.reduce_mean(tf.reduce_sum(kl_loss, axis=1))
-            total_loss = reconstruction_loss + kl_loss
-        grads = tape.gradient(total_loss, self.trainable_weights)
-        self.optimizer.apply_gradients(zip(grads, self.trainable_weights))
-        self.total_loss_tracker.update_state(total_loss)
-        self.reconstruction_loss_tracker.update_state(reconstruction_loss)
-        self.kl_loss_tracker.update_state(kl_loss)
-        return {
-            "loss": self.total_loss_tracker.result(),
-            "reconstruction_loss": self.reconstruction_loss_tracker.result(),
-            "kl_loss": self.kl_loss_tracker.result(),
-        }
+    def create_model(self, input_shape, output_shape, **kwargs):
+        self.model = ks.Sequential()    
+        self.model.add(kl.InputLayer(input_shape=input_shape))
+        self.model.add(kl.Flatten())
+        self.model.add(kl.Dense(units=128, activation=ka.relu, kernel_regularizer=kr.l2(0.01)))
+        self.model.add(kl.Dense(units=64, activation=ka.relu, kernel_regularizer=kr.l2(0.01)))
 
-class Sampling(kl.Layer):
-    """Uses (z_mean, z_log_var) to sample z, the vector encoding a digit."""
-
-    def call(self, inputs):
-        z_mean, z_log_var = inputs
-        batch = tf.shape(z_mean)[0]
-        dim = tf.shape(z_mean)[1]
-        epsilon = tf.keras.backend.random_normal(shape=(batch, dim), mean=0.0, stddev=0.01)
-        return z_mean + tf.exp(0.5 * z_log_var) * epsilon
+    def build_encoder(self):
+        x = self.encode(self.encoder_input)
+        z_mean = kl.Dense(latent_dim)(h)
+        z_log_sigma = kl.Dense(latent_dim)(h)
+        self.encoder = 
+        
+    def sampling(self, args):
+        z_mean, z_log_sigma = args
+        epsilon = K.random_normal(shape=(K.shape(z_mean)[0], latent_dim),
+                                mean=0., stddev=0.1)
+        return z_mean + K.exp(z_log_sigma) * epsilon

@@ -55,9 +55,7 @@ class SimpleAEModel(BaseModel):
         self.act_hd = config.model.act_hd
         self.aug = config.model.aug
         self.ep = config.trainer.epoch
-
         self.name = self.get_name(config.model.name)
-        logging.info(f"NAME: {self.name}")
 
     def get_opt(self, opt):
         if opt == 'adam':
@@ -95,8 +93,7 @@ class SimpleAEModel(BaseModel):
         self.model = ae
 
     def build_encoder(self):
-        x = self.encode(encoder_input)
-        x = self.encode_last_hidden(x)
+        x = self.encode(self.encoder_input)
         self.encoder = keras.Model(self.encoder_input, x, name="encoder")
         # self.encoder.summary()
 
@@ -106,12 +103,17 @@ class SimpleAEModel(BaseModel):
         # self.decoder.summary()
 
     def encode(self, x):
+        x = self.encode_to_hidden(x)
+        x = self.encode_last_hidden(x)
+        return x
+
+    def encode_to_hidden(self, x):
         if len(self.hidden_dims) > 0:
             x = kl.Dense(self.units[1], kernel_regularizer=kr.l2(self.reg1), name='encode_in')(x)
             
             if self.aug: 
                 x = self.add_activation_layer(self.act_in)(x)
-                # x = kl.Dropout(self.dropout)(x)
+                x = kl.Dropout(self.dropout)(x)
                 if self.bn: 
                     x = kl.BatchNormalization()(x)
             for ii, unit in enumerate(self.hidden_dims[1:]):
@@ -119,6 +121,7 @@ class SimpleAEModel(BaseModel):
                 x = kl.Dense(unit, kernel_regularizer=kr.l2(self.reg1), name=name)(x)
                 if self.aug: 
                     x = self.add_activation_layer(self.act_hd)(x)
+                    x = kl.Dropout(self.dropout)(x)
                     if self.bn: 
                         x = kl.BatchNormalization()(x)
                 #   x = kl.Dropout(self.dropout)(x)
@@ -147,7 +150,7 @@ class SimpleAEModel(BaseModel):
                 
                 if self.aug: 
                     x = self.add_activation_layer(self.act_hd)(x)
-                    # x = kl.Dropout(self.dropout)(x)
+                    x = kl.Dropout(self.dropout)(x)
                     if self.bn: 
                         x = kl.BatchNormalization()(x)
         x = kl.Dense(self.input_dim, kernel_regularizer=kr.l2(self.reg1), name='decod_out')(x)
@@ -156,6 +159,8 @@ class SimpleAEModel(BaseModel):
 
     def build_model(self, config):
         self.init_from_config(config)
+        logging.info(f"NAME: {self.name}")
+
         self.build_encoder()
         self.build_decoder()
         self.build_autoencoder()

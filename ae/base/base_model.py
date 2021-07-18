@@ -1,12 +1,15 @@
+import os
+
 class BaseModel(object):
     def __init__(self):
         self.model = None
+        self.save_path = "/home/swei20/AE/trained_model/"
 
     # save function that saves the checkpoint in the path defined in the config file
     def save(self, checkpoint_path=None):
         if self.model is None:
             raise Exception("You have to build the model first.")
-        checkpoint_path = f"/home/swei20/AE/trained_model/{self.name}/"
+        checkpoint_path = os.path.join(self.save_path, self.name)
         print("Saving model...")
         self.model.save_weights(checkpoint_path)
         print("Model saved")

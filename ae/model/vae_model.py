@@ -20,12 +20,13 @@ from .simple_ae_model import SimpleAEModel
 
 class VAEModel(SimpleAEModel):
     def __init__(self):
-        super(VAEModel, self).__init__()
+        super().__init__()
         self.stddev = None # stddev of the latent variable       
 
     def init_from_config(self, config):
         super().init_from_config(config)
         self.stddev = config.model.stddev or 0.1
+        self.name =  "std" + str(self.stddev).replace('.', '') + "_" + self.name
 
     def build_VAE(self):
         z_mean, z_log_sigma, z = self.encoder(self.encoder_input)
@@ -60,14 +61,18 @@ class VAEModel(SimpleAEModel):
 
     def build_model(self, config):
         self.init_from_config(config)
+        logging.info(f"NAME: {self.name}")
+
         self.build_encoder()
         self.build_decoder()
         self.build_VAE()
 
         self.model.compile(
-            # loss=self.vae_loss,
+            # loss=self.loss,
             optimizer=self.opt,
             # metrics=['acc'],
             metrics=[MeanSquaredError()]
             # metrics=[RootMeanSquaredError()]
         )
+
+    

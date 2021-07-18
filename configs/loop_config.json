@@ -7,13 +7,13 @@
   },
   "model":{
     "type": "vae",
-    "stddev": 0.1,
+    "stddev": 0.01,
     "aug": 1,
-    "name": "pc32ms",
+    "name": "",
     "input_dim": 32,
     "latent_dim": 5,
     "hidden_dims": [128, 64],
-    "dropout": 0.001,
+    "dropout": 0.00,
     "lr": 0.003,
     "reg1": 0.00001,
     "loss": "mse",
@@ -25,7 +25,7 @@
   },
   "trainer":{
     "epoch": 300,
-    "batch_size": 256,
+    "batch_size": 16,
     "validation_split":0.3,
     "verbose": 0,
     "save": 1

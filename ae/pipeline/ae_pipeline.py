@@ -31,7 +31,7 @@ class AEPipeline(BasePipeline):
 
     def add_args(self, parser):
         super().add_args(parser)
-        parser.add_argument('--type', type="str", choices=["ae", "vae"], help='Choose from ae or vae\n' )
+        parser.add_argument('--type', type=str, choices=["ae", "vae"], help='Choose from ae or vae\n' )
         parser.add_argument("--stddev", type=float, default=None)
         
 

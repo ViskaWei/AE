@@ -2,7 +2,7 @@ import sys
 from ae.pipeline.ae_pipeline import AEPipeline
 
 def main():
-    # cmd = "main --config /home/swei20/AE/configs/ae/train/pca_config.json"
+    # cmd = "main --config /home/swei20/AE/configs/test_config.json"
     # sys.argv = cmd.split()
     # print(sys.argv)
 

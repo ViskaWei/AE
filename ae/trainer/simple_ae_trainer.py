@@ -45,14 +45,14 @@ class SimpleAETrainer(BaseTrain):
         self.callbacks.append(
             EarlyStopping(
                 monitor='loss', 
-                patience=20
+                patience=12
             )
         )
 
         self.callbacks.append(
             ReduceLROnPlateau(
                 monitor='val_loss', 
-                patience=5, 
+                patience=4, 
                 min_lr=0., 
                 factor=0.1),
         )

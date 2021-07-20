@@ -14,7 +14,7 @@ class SimpleAETrainer(BaseTrain):
         self.init_callbacks()
 
     def init_log_dir(self):
-        self.log_dir = os.path.join(self.root, 'logs/pc/', self.model.name)
+        self.log_dir = os.path.join(self.root, "logs", self.config.trainer.logdir, self.model.name)
         try: 
             os.mkdir(self.log_dir)
         except:

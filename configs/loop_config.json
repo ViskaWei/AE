@@ -25,8 +25,9 @@
   },
   "trainer":{
     "epoch": 300,
-    "batch_size": 16,
+    "batch_size": 256,
     "validation_split":0.3,
+    "logdir": "vae",
     "verbose": 0,
     "save": 1
   },

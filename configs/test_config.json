@@ -27,6 +27,7 @@
       "epoch": 1,
       "batch_size": 256,
       "validation_split":0.3,
+      "logdir": "vae",
       "verbose": 1,
       "save": 1
     },

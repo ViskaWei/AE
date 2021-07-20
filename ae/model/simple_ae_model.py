@@ -18,7 +18,7 @@ from ae.base.base_model import BaseModel
 
 class SimpleAEModel(BaseModel):
     def __init__(self):
-        super(SimpleAEModel, self).__init__()
+        super().__init__()
         self.input_dim = None
         self.encoder_input = None
         self.latent_dim = None

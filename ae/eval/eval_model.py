@@ -18,12 +18,15 @@ def eval_model(x_train, x_test, config, df_test, load=None):
 
     pred = mm.encoder.predict(x_test)
     if config.model.type == "vae":
-        pred = pred[-1]
-
+        pred = pred[0]
+    # return pred
+    
+    # _,s,v = np.linalg.svd(pred)
+    # v = v.T
     idx = np.arange(len(x_test)) if df_test is None else df_test.index
     df_encode = pd.DataFrame(data= pred, columns = [f"{model_type}{i}" for i in range(1, mm.latent_dim+1)], index = idx)
     df = pd.concat([df_test, df_encode], axis=1)
-    return df
+    return df, mm
 
 
 
@@ -34,6 +37,6 @@ def plot_model(df, para, type):
         y_vars=[f"{type}{i}" for i in range(1,6)],
         hue=para,
         plot_kws=dict(marker="o", s=2, edgecolor="none"),
-        diag_kws=dict(fill=False, diag_kind="hist"),
+        diag_kws=dict(fill=False, alpha=0.3),
         palette="Spectral"
     )

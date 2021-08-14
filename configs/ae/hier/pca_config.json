@@ -1,0 +1,38 @@
+{
+  
+    "data": {
+      "dir":"./data",
+      "filename": "pc200.h5",
+      "train": "flux"
+    },
+    "model":{
+      "type": "ae",
+      "stddev": 0.01,
+      "aug": 1,
+      "name": "LowT",
+      "input_dim": 200,
+      "latent_dim": 32,
+      "hidden_dims": [128, 64],
+      "dropout": 0.001,
+      "lr": 0.003,
+      "reg1": 0.0001,
+      "loss": "mse",
+      "opt": "adam",
+      "batchnorm": 0,
+      "act_in": "leaky",
+      "act_em": "leaky",
+      "act_hd": "leaky"
+    },
+    "trainer":{
+      "epoch": 100,
+      "batch_size": 256,
+      "validation_split":0.3,
+      "logdir": "ae",
+      "verbose": 1,
+      "save": 1
+    },
+    "callbacks":{
+        "checkpoint_monitor": "val_loss",
+        "checkpoint_mode": "min"
+    }
+  }

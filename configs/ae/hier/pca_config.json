@@ -1,7 +1,7 @@
 {
   
     "data": {
-      "dir":"./data",
+      "dir":"/mnt/local/viska/data/",
       "filename": "pc200.h5",
       "train": "flux"
     },
